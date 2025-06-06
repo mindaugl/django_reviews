@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <h3>{{ book.title }}</h3>
+    <form action="{% url 'books:give_review' book.id %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend><h1>{{ book.title }}</h1></legend>
+            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            <label for="rating">Choose rating:{{rating.value}}</label><br>
+            <input type="number" min="0" max="10" name="rating" id="rating">
+        </fieldset>
+        <input type="submit" value="Review">
+    </form>
 </body>
 </html>
