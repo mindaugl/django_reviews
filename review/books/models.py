@@ -5,7 +5,7 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=100)
     publication_date = models.DateField()
-    rating = models.IntegerField(default=5)
+    rating = models.FloatField(default=5.0)
     reviews = models.IntegerField(default=100)
 
     def __str__(self):

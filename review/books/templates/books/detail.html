@@ -9,7 +9,7 @@
         <fieldset>
             <legend><h1>{{ book.title }}</h1></legend>
             {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-            <label for="rating">Choose rating:{{rating.value}}</label><br>
+            <label for="rating">Choose rating:</label><br>
             <input type="number" min="0" max="10" name="rating" id="rating">
         </fieldset>
         <input type="submit" value="Review">
