@@ -24,3 +24,8 @@ def give_review(request, book_id):
     print(book.rating)
     book.save()
     return HttpResponseRedirect(reverse("books:index"))
+
+def all_books(request):
+    books_all = Book.objects.order_by("title")
+    context = {"books_all": books_all}
+    return render(request, "books/all.html", context)

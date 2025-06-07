@@ -6,13 +6,15 @@
 <body>
     <form action="{% url 'books:give_review' book.id %}" method="post">
         {% csrf_token %}
+        <p>{{book}}</p>
         <fieldset>
-            <legend><h1>{{ book.title }}</h1></legend>
+<!--            <legend><h3>{{ book.title }}</h3></legend>-->
             {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            <p>Current Rating: {{book.rating}} ({{book.reviews}})</p>
             <label for="rating">Choose rating:</label><br>
             <input type="number" min="0" max="10" name="rating" id="rating">
+            <input type="submit" value="Review">
         </fieldset>
-        <input type="submit" value="Review">
     </form>
 </body>
 </html>

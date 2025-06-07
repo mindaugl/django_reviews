@@ -11,13 +11,13 @@
     </style>
 </head>
 <body>
-    {% if books_top10 %}
+    {% if books_all %}
     <table>
-        <caption>Top 10 books by rating</caption>
+        <caption>All books by title</caption>
         <tr>
             <th>Book Title</th><th>Rating</th>
         </tr>
-        {% for book in books_top10 %}
+        {% for book in books_all %}
         <tr>
             <td><a href="{% url 'books:detail' book.id %}">{{ book.title }}</a></td>
             <td>{{book.rating}}</td>
