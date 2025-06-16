@@ -6,4 +6,4 @@ Requirements:
 
 To test django_reviews locally:
 -  Execute 'python manage.py runserver'
--  Open web app locally via http://127.0.0.1:8000
+-  Open web app via http://127.0.0.1:8000/books (http://127.0.0.1:8000/admin)
