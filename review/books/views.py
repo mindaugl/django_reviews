@@ -28,3 +28,26 @@ def all_books(request):
     books_all = Book.objects.order_by("title")
     context = {"books_all": books_all}
     return render(request, "books/all.html", context)
+
+def backfill_books(request):
+    # file_name = request.POST["file_name"]
+    file_name = "../../../Downloads/books_dataset/books.txt"
+    file = open(file_name, 'r')
+    columns = file.readline().rstrip().split(',')
+    ind = {"title": 9, "author": 7, "date": 8, "rating": 12, "reviews": 14}
+
+    lens = {}
+    for line in file.readlines():
+        data = line.rstrip().split(',')
+        book = Book()
+        book.title = data[ind["title"]]
+        book.author = data[ind["author"]]
+        book.publication_date = data[ind["date"]]
+        # book.rating = (float(data[ind["rating"]]) - 1) * 10 / 4
+        book.reviews = data[ind["reviews"]]
+        if len(data) in lens:
+            lens[len(data)] += 1
+        else:
+            lens[len(data)] = 1
+
+    return HttpResponseRedirect(reverse("books:index"))
