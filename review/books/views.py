@@ -4,6 +4,29 @@ from django.db.models import F
 from django.urls import reverse
 from .models import Book
 
+def split_backfill_str(s):
+    """
+    Splits string s based on comma (,), while ignoring commas inside parenthesis ("").
+    Removes all parenthesis.
+    """
+    i_appos = 0
+    j = 0
+    el = []
+    words = []
+    s_len = len(s)
+    while j < s_len:
+        c = s[j]
+        j += 1
+        if c == '"':
+            i_appos += 1
+        elif c == ',' and i_appos % 2 == 0:
+            words += [''.join(el)]
+            el = []
+        else:
+            el += [c]
+    words += [''.join(el)]
+    return words
+
 
 def index(request):
     books_top10 = Book.objects.order_by("-rating")[:10]
@@ -34,20 +57,24 @@ def backfill_books(request):
     file_name = "../../../Downloads/books_dataset/books.txt"
     file = open(file_name, 'r')
     columns = file.readline().rstrip().split(',')
-    ind = {"title": 9, "author": 7, "date": 8, "rating": 12, "reviews": 14}
+    ind = {"title": 10, "author": 7, "date": 8, "rating": 12, "reviews": 14}
 
-    lens = {}
+    books = []
     for line in file.readlines():
-        data = line.rstrip().split(',')
+        data = split_backfill_str(line.rstrip())
+        if len(data) != len(columns):
+            raise ValueError(f"Too many elements parsed, {len(data) = }.")
+
         book = Book()
         book.title = data[ind["title"]]
         book.author = data[ind["author"]]
-        book.publication_date = data[ind["date"]]
-        # book.rating = (float(data[ind["rating"]]) - 1) * 10 / 4
+        date_str = data[ind["date"]]
+        if date_str == '':
+            date_str = '-9999'
+        book.publication_year = int(float(date_str))
+        book.rating = (float(data[ind["rating"]]) - 1) * 10 / 4
         book.reviews = data[ind["reviews"]]
-        if len(data) in lens:
-            lens[len(data)] += 1
-        else:
-            lens[len(data)] = 1
+        book.save()
+        books.append(book)
 
     return HttpResponseRedirect(reverse("books:index"))
