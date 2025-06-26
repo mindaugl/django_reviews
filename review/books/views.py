@@ -39,11 +39,9 @@ def detail(request, book_id):
 
 def give_review(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-    print(F("rating"))
     rating = request.POST["rating"]
     book.rating = (F("rating") * F("reviews") + rating) / (F("reviews") + 1)
     book.reviews = F("reviews") + 1
-    print(book.rating)
     book.save()
     return HttpResponseRedirect(reverse("books:index"))
 
