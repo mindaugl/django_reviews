@@ -51,28 +51,28 @@ def all_books(request):
     return render(request, "books/all.html", context)
 
 def backfill_books(request):
-    # file_name = request.POST["file_name"]
-    file_name = "../../../Downloads/books_dataset/books.txt"
-    file = open(file_name, 'r')
-    columns = file.readline().rstrip().split(',')
-    ind = {"title": 10, "author": 7, "date": 8, "rating": 12, "reviews": 14}
+    file = request.FILES['file']
+    file_name = file.temporary_file_path()
+    with open(file_name, 'r') as file:
+        columns = file.readline().rstrip().split(',')
+        index_map = {"title": 10, "author": 7, "date": 8, "rating": 12, "reviews": 14}
 
-    books = []
-    for line in file.readlines():
-        data = split_backfill_str(line.rstrip())
-        if len(data) != len(columns):
-            raise ValueError(f"Too many elements parsed, {len(data) = }.")
+        books = []
+        for line in file.readlines():
+            data = split_backfill_str(line.rstrip())
+            if len(data) != len(columns):
+                raise ValueError(f"Too many elements parsed, {len(data) = }.")
 
-        book = Book()
-        book.title = data[ind["title"]]
-        book.author = data[ind["author"]]
-        date_str = data[ind["date"]]
-        if date_str == '':
-            date_str = '-9999'
-        book.publication_year = int(float(date_str))
-        book.rating = (float(data[ind["rating"]]) - 1) * 10 / 4
-        book.reviews = data[ind["reviews"]]
-        book.save()
-        books.append(book)
+            book = Book()
+            book.title = data[index_map["title"]]
+            book.author = data[index_map["author"]]
+            date_str = data[index_map["date"]]
+            if date_str == '':
+                date_str = '-9999'
+            book.publication_year = int(float(date_str))
+            book.rating = (float(data[index_map["rating"]]) - 1) * 10 / 4
+            book.reviews = data[index_map["reviews"]]
+            book.save()
+            books.append(book)
 
     return HttpResponseRedirect(reverse("books:index"))

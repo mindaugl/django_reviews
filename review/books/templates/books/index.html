@@ -29,7 +29,17 @@
         <p>No books are available.</p>
     {% endif %}
     <p><a href="{% url 'books:all' %}">All books</a></p>
-    <p><a href="{% url 'books:backfill_books' %}">Backfill dataset</a></p>
+
+    <form action="{% url 'books:backfill_books'%}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset>
+            <p>Backfill data</p>
+            <label for="file">Choose file to backfill data:</label><br>
+            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            <input type="file" id="file" name="file"><br>
+            <input type="submit" value="Submit">
+        </fieldset>
+    </form>
 
 </body>
 </html>
