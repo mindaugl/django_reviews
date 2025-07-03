@@ -50,6 +50,11 @@ def all_books(request):
     context = {"books_all": books_all}
     return render(request, "books/all.html", context)
 
+def all_books_sorted_rating(request):
+    books_all = Book.objects.order_by("-rating")
+    context = {"books_all": books_all}
+    return render(request, "books/all.html", context)
+
 def backfill_books(request):
     file = request.FILES['file']
     file_name = file.temporary_file_path()
