@@ -20,7 +20,10 @@
         {% for book in books_top10 %}
         <tr>
             <td><a href="{% url 'books:detail' book.id %}">{{ book.title }}</a></td>
-            <td>{{book.rating}}</td>
+            <td>
+                {% load humanize %}
+                {{book.rating|floatformat:2}}
+            </td>
         </tr>
         {% endfor %}
     </table>
